@@ -2,6 +2,11 @@ name: test
 
 on:
   pull_request:
+    types:
+      - labeled
+      - synchronize
+      - opened
+      - reopened
     branches:
       - main
 
@@ -25,6 +30,7 @@ jobs:
       - run: wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
       - run: unzip ngrok-stable-linux-amd64.zip
       - run: sudo mv ./ngrok /usr/bin/ngrok
+      - run: yarn
       - run: yarn preview
       - run: ngrok http 4173
       - run: npx checkly test -e NGROK_URL=$(curl http://127.0.0.1:4040/api/tunnels | jq -r ".tunnels[0].public_url") -v
