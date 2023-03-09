@@ -1,0 +1,38 @@
+name: test
+
+on:
+  pull_request:
+    types:
+      - labeled
+      - synchronize
+      - opened
+      - reopened
+    branches:
+      - main
+
+env:
+  CHECKLY_ACCOUNT_ID: ${{ secrets.CHECKLY_ACCOUNT_ID }}
+  CHECKLY_API_KEY: ${{ secrets.CHECKLY_API_KEY }}
+  NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+          cache: "yarn"
+          cache-dependency-path: |
+            yarn.lock
+      - run: wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
+      - run: unzip ngrok-stable-linux-amd64.zip
+      - run: sudo mv ./ngrok /usr/bin/ngrok
+      - run: yarn
+      - run: yarn build
+      - run: npx http-server ./dist &
+      - run: ngrok http 8080 --authtoken ${{ secrets.NGROK_AUTHTOKEN }} --log=stdout > ngrok.log &
+      - run: echo $(curl -s http://127.0.0.1:4040/api/tunnels | jq -r ".tunnels[0].public_url")
+      - run: npx checkly test -e NGROK_URL=$(curl -s http://127.0.0.1:4040/api/tunnels | jq -r ".tunnels[0].public_url") -v
