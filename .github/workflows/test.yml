@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+env:
+  CHECKLY_ACCOUNT_ID: ${{ secrets.CHECKLY_ACCOUNT_ID }}
+  CHECKLY_API_KEY: ${{ secrets.CHECKLY_API_KEY }}
+
 jobs:
   test:
     name: test
@@ -19,9 +23,6 @@ jobs:
             yarn.lock
       - run: yarn preview
       - uses: luisboto/ngrok-tunnel-action@0.1.7.2
-      - env:
-          CHECKLY_ACCOUNT_ID: ${{ secrets.CHECKLY_ACCOUNT_ID }}
-          CHECKLY_API_KEY: ${{ secrets.CHECKLY_API_KEY }}
         with:
           timeout: 10m
           port: 4173
