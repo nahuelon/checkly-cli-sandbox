@@ -8,6 +8,7 @@ on:
 env:
   CHECKLY_ACCOUNT_ID: ${{ secrets.CHECKLY_ACCOUNT_ID }}
   CHECKLY_API_KEY: ${{ secrets.CHECKLY_API_KEY }}
+  NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
 
 jobs:
   test:
@@ -21,12 +22,9 @@ jobs:
           cache: "yarn"
           cache-dependency-path: |
             yarn.lock
+      - run: wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
+      - run: unzip ngrok-stable-linux-amd64.zip
+      - run: sudo mv ./ngrok /usr/bin/ngrok
       - run: yarn preview
-      - uses: luisboto/ngrok-tunnel-action@0.1.7.2
-        with:
-          timeout: 10m
-          port: 4173
-          ngrok_authtoken: ${{ secrets.NGROK_AUTHTOKEN }}
-          tunnel_type: http
-          save_url_to_filename: ngrok_url.txt
-      - run: npx checkly test -e NGROK_URL=$(cat ngrok_url.txt) -v
+      - run: ngrok http 4173
+      - run: npx checkly test -e NGROK_URL=$(curl http://127.0.0.1:4040/api/tunnels | jq -r ".tunnels[0].public_url") -v
