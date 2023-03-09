@@ -1,0 +1,31 @@
+name: test
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+          cache: "yarn"
+          cache-dependency-path: |
+            yarn.lock
+      - run: yarn preview
+      - uses: luisboto/ngrok-tunnel-action@0.1.7.2
+      - env:
+          CHECKLY_ACCOUNT_ID: ${{ secrets.CHECKLY_ACCOUNT_ID }}
+          CHECKLY_API_KEY: ${{ secrets.CHECKLY_API_KEY }}
+        with:
+          timeout: 10m
+          port: 4173
+          ngrok_authtoken: ${{ secrets.NGROK_AUTHTOKEN }}
+          tunnel_type: http
+          save_url_to_filename: ngrok_url.txt
+      - run: npx checkly test -e NGROK_URL=$(cat ngrok_url.txt) -v
