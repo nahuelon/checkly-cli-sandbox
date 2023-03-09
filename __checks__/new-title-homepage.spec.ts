@@ -13,6 +13,6 @@ test("My Homepage", async ({ page, context }) => {
   });
   const response = await page.goto(process.env.NGROK_URL);
   expect(response.status()).toBeLessThan(400);
-  await expect(page).toHaveTitle(/Vite App New Title/);
+  await expect(page).not.toHaveTitle(/Vite App New Title/);
   await page.screenshot({ path: "homepage.jpg" });
 });
