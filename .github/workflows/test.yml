@@ -31,6 +31,8 @@ jobs:
       - run: unzip ngrok-stable-linux-amd64.zip
       - run: sudo mv ./ngrok /usr/bin/ngrok
       - run: yarn
-      - run: yarn preview
-      - run: ngrok http 4173
-      - run: npx checkly test -e NGROK_URL=$(curl http://127.0.0.1:4040/api/tunnels | jq -r ".tunnels[0].public_url") -v
+      - run: yarn build
+      - run: npx http-server ./dist &
+      - run: ngrok http 8080 --log=stdout > ngrok.log &
+      - run: echo $(curl -s http://127.0.0.1:4040/api/tunnels | jq -r ".tunnels[0].public_url")
+      - run: npx checkly test -e NGROK_URL=$(curl -s http://127.0.0.1:4040/api/tunnels | jq -r ".tunnels[0].public_url") -v
