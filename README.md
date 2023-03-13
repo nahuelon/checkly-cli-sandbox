@@ -8,11 +8,11 @@ You can sign up for a free `Checkly` account [here](https://app.checklyhq.com/si
 
 After you get your [Checkly API Key](https://app.checklyhq.com/settings/user/api-keys) and [ngrok authtoken](https://dashboard.ngrok.com/get-started/your-authtoken), you must configure the following secrets within your project settings:
 
-```
-CHECKLY_ACCOUNT_ID
-CHECKLY_API_KEY
-NGROK_AUTHTOKEN
-```
+| secret                 | description                                                                                                             | type              |
+|------------------------|-------------------------------------------------------------------------------------------------------------------------|-------------------|
+| `CHECKLY_ACCOUNT_ID`   | Access your [Account settings](https://app.checklyhq.com/settings/account/general) to get the value.                    | UUID              |
+| `CHECKLY_API_KEY`      | Access the [API Keys](https://app.checklyhq.com/signup) section to create a new API Key.                                | String (`cu_...`) |
+| `NGROK_AUTHTOKEN`      | Access the [Your Authtoken](https://dashboard.ngrok.com/get-started/your-authtoken) section to create a new Authtoken.  | String            |
 
 This example uses a Vue 3 boilerplate project and has two open pull-request:
 1. [PR #10](https://github.com/nahuelon/checkly-cli-sandbox/pull/10) with all tests passing, executing the checks running the branch source-code.
