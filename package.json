@@ -12,7 +12,9 @@
 		"preview": "vite preview --port 4173",
 		"lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
 		"checkly:deploy": "npx checkly deploy --force",
-		"checkly:test": "npx checkly test"
+		"checkly:test": "npx checkly test",
+		"tunnel:dev": "node tunnelDev.js",
+		"tunnel:checkly:test": "npx checkly test -e NGROK_URL=$(curl -s http://127.0.0.1:4040/api/tunnels | jq -r \".tunnels[0].public_url\") -v"
 	},
 	"dependencies": {
 		"pinia": "^2.0.22",
@@ -29,6 +31,7 @@
 		"eslint": "^8.23.1",
 		"eslint-plugin-vue": "^9.5.1",
 		"http-server": "^14.1.1",
+		"ngrok": "^4.3.3",
 		"postcss": "^8.4.16",
 		"postcss-import": "^15.0.0",
 		"prettier": "^2.7.1",
