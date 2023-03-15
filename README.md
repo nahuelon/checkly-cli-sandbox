@@ -17,3 +17,28 @@ After you get your [Checkly API Key](https://app.checklyhq.com/settings/user/api
 This example uses a Vue 3 boilerplate project and has two open pull-request:
 1. [PR #10](https://github.com/nahuelon/checkly-cli-sandbox/pull/10) with all tests passing, executing the checks running the branch source-code.
 1. [PR #9](https://github.com/nahuelon/checkly-cli-sandbox/pull/9) with tests failing, restricting the pull request to be merged.
+
+## Local tests example
+
+You can execute `test` pointing to your local server using `process.env.NGROK_URL` as URL string:
+
+```bash
+# Terminal 1
+
+# set the ngrok authtoken
+export NGROK_AUTHTOKEN=<your_ngrok_auth_token>
+
+# runs (and keep running) your local server listening in localhost:5173 connected to an ngrok tunnel
+npm run tunnel:dev
+```
+
+```bash
+# Terminal 2
+
+# run 'npx checkly login' or set the following environment variables
+export CHECKLY_ACCOUNT_ID=<your_checkly_account_id>
+export CHECKLY_API_KEY=<your_checkly_api_key>
+
+# execute 'npx checkly test' sending NGROK_URL
+npm run tunnel:checkly:test 
+```
